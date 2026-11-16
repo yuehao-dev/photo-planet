@@ -37,3 +37,6 @@ Thumbs.db
 
 # Tracked data/public/demo-media contain fictional fixtures only.
 # Before importing personal data, run: python tools/prepare_private.py --confirm
+
+# Local publishing notes
+/GitHub发布填写指南.md
