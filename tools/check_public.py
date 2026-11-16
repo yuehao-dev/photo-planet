@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Conservative public-demo checks; not a guarantee that arbitrary user data is anonymous."""
 from pathlib import Path
+from demo_dialogues import DIALOGUES
 import json
 import re
 import sys
@@ -40,7 +41,7 @@ def main():
         if len(photos['photos']) != 24 or 'sourceDir' in photos or any(p.get('sourceType') != 'demo' or not p['id'].startswith('demo-') or 'file' in p for p in photos['photos']):
             problems.append({'path': 'data/photos.json', 'reason': 'unexpected-non-demo-photos'})
         chat = json.loads((ROOT / 'data/chat/index.json').read_text(encoding='utf-8'))
-        if chat.get('generation') != 'fictional-demo-v1' or chat['count'] != 1280 or len(chat['days']) != 24:
+        if chat.get('generation') != 'fictional-demo-v2' or chat['count'] != sum(len(block.splitlines()) for block in DIALOGUES) or len(chat['days']) != 24:
             problems.append({'path': 'data/chat/index.json', 'reason': 'unexpected-non-demo-chat'})
     except (KeyError, OSError, ValueError):
         problems.append({'path': 'data', 'reason': 'invalid-demo-manifest'})

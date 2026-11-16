@@ -85,7 +85,7 @@ let browser;
         check(name + ': audio attachment remains on-demand', await page.locator('.chat-player audio').getAttribute('preload') === 'none');
         report.skipped.push(name + ': native audio playback (test engine has no WAV codec)');
       }
-      await page.locator('#searchText').fill('柠檬汽水'); await page.locator('#searchSubmit').click();
+      await page.locator('#searchText').fill('窗户'); await page.locator('#searchSubmit').click();
       await page.waitForSelector('.reader-result');
       check(name + ': selected-day search returns results', true);
       await page.locator('.reader-result').first().click(); await page.waitForSelector('.is-quote-target');
@@ -93,8 +93,32 @@ let browser;
       await page.locator('#lastMessage').click(); await page.waitForTimeout(200);
       check(name + ': chat DOM stays bounded', await page.locator('.archive-messages .chat-message').count() <= 240);
       await page.locator('#firstMessage').click(); await page.waitForTimeout(250);
+      // The browser sees a new index while an existing day remains on screen.
+      const beforeId = await page.locator('.archive-messages .chat-message').first().getAttribute('data-message-id');
+      const fixture = JSON.parse(fs.readFileSync(path.join(root, 'data/chat/index.json'), 'utf8'));
+      const demoDay = JSON.parse(fs.readFileSync(path.join(root, 'data/chat', fixture.days['2025-03-08'].url), 'utf8'));
+      const demoChunk = JSON.parse(fs.readFileSync(path.join(root, 'data/chat', demoDay.chunks[0].url), 'utf8'));
+      const addition = { ...demoChunk.messages.at(-1), id: 'm_' + 'f'.repeat(32), text: '我到楼下了，帮我开一下门', timestamp: demoChunk.messages.at(-1).timestamp + 120, time: '19:48:19' };
+      delete addition.quote;
+      demoChunk.messages.push(addition); demoDay.count++;
+      demoDay.chunks[0] = { ...demoDay.chunks[0], url: 'days/2025-03-08/live/chunk-0000.json', count: demoDay.count, endTime: addition.timestamp };
+      demoDay.messageChunks[addition.id] = 0;
+      fixture.days['2025-03-08'] = { count: demoDay.count, url: 'days/2025-03-08/live/index.json' }; fixture.count++;
+      await page.route('**/data/chat/days/2025-03-08/live/**', route => route.fulfill({ json: route.request().url().endsWith('index.json') ? demoDay : demoChunk }));
+      await page.route('**/data/chat/index.json', route => route.fulfill({ json: fixture }));
+      await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+      await page.waitForFunction(() => document.querySelector('#refreshRecords').textContent.includes('新收进来'));
+      check(name + ': export update is detected without moving the current conversation', await page.locator('.archive-messages .chat-message').first().getAttribute('data-message-id') === beforeId);
+      await page.locator('#recordsUpdate').click();
+      await page.waitForFunction(() => document.querySelector('#refreshRecords').textContent.includes('最新'));
+      check(name + ': update button reloads the selected day at the saved message', await page.locator('.archive-messages .chat-message').first().getAttribute('data-message-id') === beforeId);
+      check(name + ': refreshed day includes the newly exported message', (await page.locator('.archive-messages').textContent()).includes(addition.text));
+      await page.unroute('**/data/chat/index.json');
+
       await page.evaluate(() => PLANET_PREFS.patch({ theme: 'cream', columns: 'auto' }));
       if (name === 'phone') {
+        await page.goto(origin + prefix + 'chat.html?date=2025-03-08');
+        await page.waitForSelector('.archive-messages .chat-message');
         fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
         await page.locator('#searchText').fill('');
         await page.screenshot({ path: path.join(root, 'docs/chat-demo.png'), animations: 'disabled' });

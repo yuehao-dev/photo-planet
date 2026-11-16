@@ -14,6 +14,7 @@ import shutil
 import struct
 import wave
 from PIL import Image, ImageDraw
+from demo_dialogues import DIALOGUES
 
 ROOT = Path(__file__).resolve().parent.parent
 TZ = timezone(timedelta(hours=8))
@@ -160,39 +161,27 @@ def main():
     with wave.open(str(ROOT / 'demo-media' / sound_path), 'wb') as w:
         w.setparams((1, 2, 16000, 0, 'NONE', 'not compressed'))
         w.writeframes(b''.join(struct.pack('<h', int(4500 * math.sin(math.tau * 523.25 * n / 16000) * math.exp(-n / 4000) * min(1, n / 160))) for n in range(16000)))
-    phrases = [
-        ('her', '今天的风有一点像刚洗好的被子。'), ('me', '那我们把窗户开一小会儿。'),
-        ('her', '路过一家小花店，想起你喜欢的颜色。'), ('me', '留到周末，我们一起挑一束。'),
-        ('her', '刚煮好的面，第一口最好吃。'), ('me', '等我两分钟，把葱花也留一点。'),
-        ('her', '公交车转弯的时候，夕阳刚好照过来。'), ('me', '你拍下来了吗？'),
-        ('her', '拍了一张，有点歪，但是很好看。'), ('me', '歪一点也没关系，是今天的样子。'),
-        ('her', '今晚想早点睡，明天去看河边的树。'), ('me', '好，早餐我来准备。'),
-        ('her', '柠檬汽水还是要冰冰的。'), ('me', '我选热可可，我们一人分对方一口。'),
-        ('her', '这一天没有什么大事，但很开心。'), ('me', '那就把它也放进相册里。'),
-        ('her', '书只看了两页，猫倒是睡了一下午。'), ('me', '两页也算数，慢慢看。'),
-        ('her', '雨停了，楼下的叶子亮晶晶。'), ('me', '穿好外套，我们下楼走走。'),
-        ('her', '明天不用赶路，可以绕一点远。'), ('me', '听你的，顺路买一袋栗子。'),
-        ('her', '回家的时候记得抬头，有一弯月亮。'), ('me', '看见了。晚安，明天再见。'),
-    ]
-    index = dict(version=1, generation='fictional-demo-v1', updatedAt='2025-12-23T20:00:00+08:00', timeZone='Asia/Shanghai', count=0, days={})
-    previous = None
+    index = dict(version=1, generation='fictional-demo-v2', updatedAt='2025-12-23T22:32:31+08:00', timeZone='Asia/Shanghai', count=0, days={})
     for pi, photo in enumerate(photos):
         date = photo.pop('demoDate')
-        count = 200 if pi % 6 == 0 else 24
-        start = datetime.fromisoformat(date + 'T17:30:00+08:00')
         messages = []
-        for n in range(count):
-            sender, text = phrases[n % len(phrases)]
-            if n >= 24:
-                text += f'（虚构演示片段 {n // 24 + 1}）'
-            when = start + timedelta(seconds=n * 37)
+        for n, line in enumerate(DIALOGUES[pi].splitlines()):
+            clock, sender, text = line.split(' ', 2)
+            when = datetime.fromisoformat(date + 'T' + clock + '+08:00')
             mid = 'm_' + hashlib.md5(f'fictional:{date}:{n}'.encode()).hexdigest()
-            messages.append(dict(id=mid, sender=sender, text=text, timestamp=int(when.timestamp()), time=when.strftime('%H:%M:%S'), type='文本', kind='text'))
-        if previous:
-            messages[0]['quote'] = dict(sender='her', text='这一天没有什么大事，但很开心。', target=previous)
-        messages[6].update(text='今天路边的小房子，给你看。（程序插画演示）', kind='image', media=[dict(kind='image', url=image_path, thumb=image_path, width=660, height=528)])
-        messages[10].update(text='一声轻轻的提示音。（合成音效，并非真人语音）', kind='audio', media=[dict(kind='audio', url=sound_path)])
-        messages[15].update(text='分享一个占位链接。', link=dict(url='https://example.com/', title='示例链接 · example.com'))
+            messages.append(dict(id=mid, sender=sender, text=text, timestamp=int(when.timestamp()), time=clock, type='文本', kind='text'))
+        count = len(messages)
+        if pi == 0:
+            messages[8].update(kind='image', media=[dict(kind='image', url=image_path, thumb=image_path, width=660, height=528)])
+            messages[10].update(kind='audio', text='我录了一下店里的声音（试听为合成提示音）', media=[dict(kind='audio', url=sound_path)])
+            messages[20]['quote'] = dict(sender=messages[19]['sender'], text=messages[19]['text'], target=dict(date=date, chunk=0, id=messages[19]['id']))
+        if pi == 12:
+            messages[7]['quote'] = dict(sender='her', text='给你看看这边的位置', target=dict(date='2025-03-08', chunk=0, id='m_' + hashlib.md5(b'fictional:2025-03-08:8').hexdigest()))
+        # Delete only obsolete chunks under this exact known synthetic day path.
+        demo_day = ROOT / f'data/chat/days/{date}/demo'
+        for old in demo_day.glob('chunk-*.json'):
+            if old.name not in {f'chunk-{part:04d}.json' for part in range((count + 79) // 80)}:
+                old.unlink()
         chunks = []
         mappings = {}
         for offset in range(0, count, 80):
@@ -204,7 +193,6 @@ def main():
         url = f'days/{date}/demo/index.json'
         write_json('data/chat/' + url, dict(version=1, date=date, count=count, chunks=chunks, messageChunks=mappings))
         index['days'][date] = dict(count=count, url=url); index['count'] += count
-        previous = dict(date=date, chunk=0, id=messages[14]['id'])
     write_json('data/chat/index.json', index)
     payload = dict(version=2, generatedAt='2025-12-23T20:00:00+08:00', count=len(photos), photos=photos)
     write_json('data/photos.json', payload)

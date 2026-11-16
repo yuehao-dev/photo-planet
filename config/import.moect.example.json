@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "paths": {
+    "source": "./chat-exports/selected-contact.json",
+    "output": "../photo-planet/data/chat",
+    "stateDir": "./moect-cache"
+  },
+  "import": {
+    "format": "moect",
+    "expectedChatId": "contact-demo",
+    "filePatterns": ["*.json"],
+    "fields": {}
+  }
+}

@@ -259,6 +259,14 @@ def normalize_content(row, her_id, self_id=None):
     def clean(text):
         return re.sub(r'wxid_[A-Za-z0-9_]+', lambda m: sender_name(m.group(), her_id, me_id), str(text)).replace('\x00', '')
     result = {'type': kind, 'text': ''}
+    if row.get('_moect_quote'):
+        quote = row['_moect_quote']
+        who = sender_name(quote.get('sender_wxid') or quote.get('sender'), her_id, me_id)
+        result.update(text=clean(content), quote={'sender': who, 'text': clean(quote.get('text', ''))})
+        server = quote.get('server_id')
+        if server not in (None, '', 0, '0'):
+            result['quote']['_targetId'] = 'm_' + hashlib.sha256(compact([her_id, 'server', str(server)])).hexdigest()[:32]
+        return result
     media = {'图片': '一张图片', '语音': '一条语音', '视频': '一段视频', '表情': '一个表情包', '表情分享': '一个表情包', '文件': '一个文件'}
     if kind in media:
         result.update(text=media[kind] + '（附件尚未收录）', attachment=True)
@@ -359,9 +367,11 @@ def merge_enriched(existing, incoming):
 
 
 def discover(source, patterns=None):
+    def complete(path):
+        return not any(part.startswith('.') or part.endswith(('.tmp', '.partial')) for part in path.relative_to(source.parent).parts)
     if source.is_file():
-        return [source]
-    paths = [p for pattern in (patterns or validate_settings({})['filePatterns']) for p in source.rglob(pattern) if p.is_file()]
+        return [source] if complete(source) else []
+    paths = [p for pattern in (patterns or validate_settings({})['filePatterns']) for p in source.rglob(pattern) if p.is_file() and complete(p)]
     # Old exports first, merged total next, dated incrementals last.
     def priority(path):
         if path.name.endswith('本机全部历史.json'):
@@ -461,7 +471,14 @@ def publish(db, output, force=False):
             current.pop(day, None)
             updates.append((day, None))
             continue
-        rich = any(m.get('richVersion') == 1 for m in messages)
+        for message in messages:
+            quote = message.get('quote') or {}
+            target_id = quote.pop('_targetId', None)
+            if target_id:
+                target = db.execute('SELECT day FROM messages WHERE id=?', (target_id,)).fetchone()
+                if target:
+                    quote['target'] = {'date': target[0], 'chunk': 0, 'id': target_id}
+        rich = True  # Stable message locators also support text-only Moect replies.
         seed = {'version': SCHEMA_VERSION, 'chunkSize': CHUNK_SIZE, 'messages': messages}
         if rich:
             seed['locatorVersion'] = 1
@@ -519,7 +536,9 @@ def build(source, output, state_dir, verify_output=False, import_settings=None):
         settings = validate_settings(import_settings or {})
     except ValueError as error:
         raise ImportFailure(str(error)) from None
-    settings_hash = hashlib.sha256(compact(settings)).hexdigest()
+    # Standard profiles retain their v1.1 cache identity.
+    hash_settings = {k: v for k, v in settings.items() if k != 'format'} if settings['format'] == 'standard' else settings
+    settings_hash = hashlib.sha256(compact(hash_settings)).hexdigest()
     source, output, state_dir = map(lambda p: Path(p).resolve(), (source, output, state_dir))
     if not source.exists():
         raise ImportFailure('聊天源目录不存在。')
@@ -555,7 +574,8 @@ def build(source, output, state_dir, verify_output=False, import_settings=None):
                 if upgrade:
                     db.execute('DELETE FROM inputs')
                 for path in paths:
-                    size = path.stat().st_size
+                    before = path.stat()
+                    size = before.st_size
                     old = db.execute('SELECT size,digest,ends_newline FROM inputs WHERE path=?', (str(path),)).fetchone()
                     digest, prefix = fingerprint(path, size, old[0] if old and old[0] <= size else 0)
                     if old and old[0] == size and old[1] == digest:
@@ -563,6 +583,10 @@ def build(source, output, state_dir, verify_output=False, import_settings=None):
                     offset = old[0] if old and path.suffix.lower() == '.jsonl' and old[0] <= size and old[1] == prefix and old[2] else 0
                     stats['filesChanged'] += 1
                     for row in records(path, size, offset):
+                        if settings['format'] == 'moect' and isinstance(row, dict) and set(row) == {'metadata'}:
+                            if not isinstance(row['metadata'], dict) or row['metadata'].get('session') != settings['expectedChatId']:
+                                raise ImportFailure('Moect 元数据会话与配置不一致。')
+                            continue
                         try:
                             row = adapt_row(row, settings)
                         except (ValueError, TypeError, OverflowError, OSError) as error:
@@ -599,7 +623,8 @@ def build(source, output, state_dir, verify_output=False, import_settings=None):
                             db.execute('INSERT OR IGNORE INTO dirty VALUES (?)', (existing[0],))
                         else:
                             stats['inserted'] += 1
-                    if fingerprint(path, size)[0] != digest:
+                    after = path.stat()
+                    if (path.suffix.lower() != '.jsonl' and (after.st_size, after.st_mtime_ns) != (before.st_size, before.st_mtime_ns)) or after.st_size < size or fingerprint(path, size)[0] != digest:
                         raise ImportFailure('导入期间源文件被改写，请等导出完成后重试。')
                     with path.open('rb') as stream:
                         if size:

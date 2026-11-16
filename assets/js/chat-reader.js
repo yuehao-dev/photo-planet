@@ -212,16 +212,43 @@
   $('dateJump').addEventListener('change', event => selectDate(event.target.value));
   for (const id of ['previousDate', 'nextDate']) $(id).addEventListener('click', () => selectDate($(id).dataset.date));
   $('randomDate').addEventListener('click', () => { if (dates.length) selectDate(dates[Math.floor(Math.random() * dates.length)]); });
-  $('refreshRecords').addEventListener('click', async () => {
-    const button = $('refreshRecords'); button.disabled = true;
+  let refreshing = false;
+  async function refreshRecords(manual = false) {
+    if (refreshing || (!manual && (document.hidden || loading))) return;
+    refreshing = true;
+    const button = $('refreshRecords');
+    if (manual) button.disabled = updateNotice.disabled = true;
     try {
-      index = await data.getIndex(true); dates = Object.keys(index.days).sort();
+      const previous = index, next = await data.getIndex(true);
+      index = next; dates = Object.keys(index.days).sort();
       $('archiveStats').textContent = `收好了 ${format(dates.length)} 个日子，${format(index.count)} 句话。`;
       if (dates.length) { $('calendarMonth').min = dates[0].slice(0, 7); $('calendarMonth').max = dates.at(-1).slice(0, 7); }
-      renderCalendar(); dayHeading(); button.textContent = '日子已经是最新的了 ✓';
-    } catch (error) { button.textContent = error.message; }
-    finally { button.disabled = false; }
-  });
+      renderCalendar(); dayHeading();
+      const changed = previous && JSON.stringify(previous.days) !== JSON.stringify(next.days);
+      if (manual) {
+        const saved = place();
+        if (date && next.days[date]) await selectDate(date, saved || {});
+        else if (!date && dates.length) await selectDate(dates.at(-1));
+        button.textContent = '日子已经是最新的了 ✓';
+        updateNotice.textContent = ''; updateNotice.hidden = true;
+      } else if (changed) {
+        button.textContent = '有新收进来的话，点这里看看 ↻';
+        updateNotice.textContent = '有新收进来的话，点这里看看 ↻'; updateNotice.hidden = false;
+        if (!date && dates.length) await selectDate(dates.at(-1));
+      }
+    } catch (error) { if (manual) { button.textContent = error.message; updateNotice.textContent = error.message + ' · 点此重试'; updateNotice.hidden = false; } }
+    finally { refreshing = false; button.disabled = updateNotice.disabled = false; }
+  }
+  const updateNotice = node('button', '', 'reader-update');
+  updateNotice.type = 'button'; updateNotice.id = 'recordsUpdate'; updateNotice.hidden = true;
+  updateNotice.setAttribute('aria-live', 'polite');
+  document.querySelector('.reader-day-head').after(updateNotice);
+  updateNotice.addEventListener('click', () => refreshRecords(true));
+  $('refreshRecords').addEventListener('click', () => refreshRecords(true));
+  const refreshMs = bounded(cfg.indexRefreshMs, 60000, 5000, 300000);
+  setInterval(() => { if (index) refreshRecords(); }, refreshMs);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && index) refreshRecords(); });
+  window.addEventListener('focus', () => { if (index) refreshRecords(); });
   $('resumeReading').addEventListener('click', () => { const b = bookmark(); if (b) selectDate(b.date, b); });
   $('quoteReturn').addEventListener('click', () => { const b = quotePlaces.pop(); $('quoteReturn').hidden = !quotePlaces.length; if (b) selectDate(b.date, b); });
   $('firstMessage').addEventListener('click', () => selectDate(date));

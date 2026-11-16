@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "application": "Moect",
+    "version": "1.2.8",
+    "session": "contact-demo",
+    "time_zone": "Asia/Shanghai",
+    "demo": true
+  },
+  "messages": [
+    {
+      "local_id": 8,
+      "server_id": "10008",
+      "shard": 0,
+      "type": 1,
+      "type_name": "文本",
+      "create_time": 1741401486,
+      "time_str": "2025-03-08 10:38:06",
+      "sender": "我",
+      "sender_wxid": "self-demo",
+      "is_sender": true,
+      "session": "contact-demo",
+      "kind": "text",
+      "text": "给你带包糖过来 等我一下"
+    },
+    {
+      "local_id": 9,
+      "server_id": "10009",
+      "shard": 0,
+      "type": 1,
+      "type_name": "引用消息",
+      "create_time": 1741434363,
+      "time_str": "2025-03-08 19:46:03",
+      "sender": "小夏",
+      "sender_wxid": "contact-demo",
+      "is_sender": false,
+      "session": "contact-demo",
+      "kind": "quote",
+      "text": "我拿了好多包 你怎么一包都没用",
+      "quote": {
+        "server_id": "10008",
+        "sender_wxid": "self-demo",
+        "sender": "阿屿",
+        "text": "给你带包糖过来 等我一下"
+      }
+    },
+    {
+      "local_id": 10,
+      "server_id": "10010",
+      "shard": 0,
+      "type": 1,
+      "type_name": "文本",
+      "create_time": 1741513200,
+      "time_str": "2025-03-09 17:40:00",
+      "sender": "我",
+      "sender_wxid": "self-demo",
+      "is_sender": true,
+      "session": "contact-demo",
+      "kind": "text",
+      "text": "你那把伞落店里了 我刚打电话问过 明天下班去拿"
+    }
+  ],
+  "count": 3
+}

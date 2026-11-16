@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
+    parser.add_argument('--format', choices=['standard', 'moect'], default='standard')
     args = parser.parse_args()
     target = args.out.resolve()
     if target == ROOT or target.is_relative_to(ROOT) or target.exists():
@@ -32,10 +33,12 @@ def main():
     shutil.copyfile(ROOT / 'config/site.js', site / 'config/site.js')
     # Drop the copied fictional snapshot, then publish only the imported example rows.
     shutil.rmtree(site / 'data/chat')
-    shutil.copyfile(ROOT / 'examples/chat/full.json', source / 'full.json')
-    first = build(source, site / 'data/chat', target / 'cache')
-    shutil.copyfile(ROOT / 'examples/chat/increment-2025-03-09.json', source / 'increment.json')
-    second = build(source, site / 'data/chat', target / 'cache')
+    examples = ROOT / ('examples/moect' if args.format == 'moect' else 'examples/chat')
+    rules = {'format': 'moect', 'expectedChatId': 'contact-demo', 'filePatterns': ['*.json']} if args.format == 'moect' else {}
+    shutil.copyfile(examples / 'full.json', source / 'full.json')
+    first = build(source, site / 'data/chat', target / 'cache', import_settings=rules)
+    shutil.copyfile(examples / ('increment.json' if args.format == 'moect' else 'increment-2025-03-09.json'), source / 'increment.json')
+    second = build(source, site / 'data/chat', target / 'cache', import_settings=rules)
     assert first['count'] == 8 and second['count'] == 10 and second['duplicates'] == 1
     with (site / 'config/site.js').open('a', encoding='utf-8') as output:
         output.write("\nwindow.SITE_CONFIG.chat.initialDate = '2025-03-08';\nwindow.SITE_CONFIG.chat.photoDateOverrides = { 'demo-spring-2': '2025-03-09' };\n")

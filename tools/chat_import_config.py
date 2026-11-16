@@ -5,7 +5,7 @@ import json
 import math
 
 FIELDS = {'chat_username', 'sender_username', 'sender', 'timestamp', 'time', 'type', 'server_id', 'local_id', 'source_database', 'content'}
-DEFAULTS = {'filePatterns': ['*.jsonl', '聊天记录.json', '*本机全部历史.json', 'full.json', 'increment*.json'], 'fields': {}, 'expectedChatId': '', 'selfIds': [], 'selfLabels': ['我'],
+DEFAULTS = {'format': 'standard', 'filePatterns': ['*.jsonl', '聊天记录.json', '*本机全部历史.json', 'full.json', 'increment*.json'], 'fields': {}, 'expectedChatId': '', 'selfIds': [], 'selfLabels': ['我'],
             'otherLabels': [], 'systemLabels': ['系统'], 'timestampUnit': 'seconds', 'deriveTime': False}
 
 
@@ -15,6 +15,10 @@ def validate_settings(value):
     settings = {**DEFAULTS, **value}
     if not isinstance(settings['filePatterns'], list) or not settings['filePatterns'] or any(not isinstance(v, str) or not v or '/' in v or '\\' in v or '..' in v for v in settings['filePatterns']):
         raise ValueError('filePatterns 需要文件名匹配模式，不允许目录或父路径。')
+    if settings['format'] not in ('standard', 'moect'):
+        raise ValueError('format 仅支持 standard 或 moect。')
+    if settings['format'] == 'moect' and (not settings['expectedChatId'] or settings['fields']):
+        raise ValueError('Moect 模式需指定 expectedChatId，fields 保持为空。')
     fields = settings['fields']
     if not isinstance(fields, dict) or set(fields) - FIELDS or any(not isinstance(v, str) or not v or len(v) > 100 for v in fields.values()):
         raise ValueError('fields 仅支持受说明的顶层字段映射。')
@@ -45,6 +49,9 @@ def load_config(path):
 def adapt_row(row, settings):
     if not isinstance(row, dict):
         return row
+    if settings['format'] == 'moect':
+        from moect_adapter import adapt
+        row = adapt(row, settings['expectedChatId'])
     result = dict(row)
     for canonical, source in settings['fields'].items():
         if source in row:

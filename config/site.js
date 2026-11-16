@@ -35,6 +35,7 @@ window.SITE_CONFIG = {
     photoDateFallback: true, // 没有独立聊天日期时，按照片的完整年月日匹配。
     photoDateOverrides: {}, // 例如 'demo-spring-6': '2025-03-23'；优先级最高。
     previewLines: 6, maxVisibleChunks: 3, searchLimit: 100,
+    // 独立聊天页每隔 indexRefreshMs 检查更新；提示后点击载入，保留正在读的位置。
     preloadPx: 900, requestTimeoutMs: 20000, indexRefreshMs: 60000,
     dayCacheEntries: 16, chunkCacheEntries: 32,
     senderAliases: { me: ['我', '自己'], her: ['对方'], system: ['系统'] },

@@ -18,3 +18,5 @@ python tools/build_chats.py --config ../photo-planet-private/import.json
 ```
 
 普通文字导入器不自动解密图片或转码所有附件；这里展示的是离线导出后的已发布数据，不是微信实时在线同步。
+
+使用 Moect 1.2.8 导出，或希望固定目录有变化就自动更新？参照 [自动导入教程](AUTO-IMPORT.md)，使用 `import.moect.example.json` 与 `watch_chats.py`。

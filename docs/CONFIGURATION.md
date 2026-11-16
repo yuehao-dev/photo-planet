@@ -208,3 +208,9 @@ python tools/build_photos.py --config ../photo-planet-private/photos.json
 ```
 
 改变尺寸或质量会生成新派生文件名，避免旧浏览器缓存继续显示旧画质；原图和照片 ID 不变。旧派生图不会自动删除，以免破坏仍在打开的旧页面。手机为主可先用 640／1600、质量 78、并发 2，再按实际观感调整；EXIF／日期目录识别和未知日期的处理原则不变。
+
+## 第三方导出与自动更新
+
+Moect 1.2.8 使用 `config/import.moect.example.json`，通用格式使用 `config/import.example.json`。均复制到仓库外后改路径。导入配置新增 `import.format`：`standard`（默认）或 `moect`；Moect 必填 `expectedChatId`，`fields` 留空。详细操作见 [自动导入教程](AUTO-IMPORT.md)。
+
+`chat.indexRefreshMs` 也用于独立聊天页的后台更新检查（默认 60000 毫秒，范围 5000–300000）；回到前台会检查一次。新内容进入日历，当前对话通过更新按钮载入，保留阅读位置。
