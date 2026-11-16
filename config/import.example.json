@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "paths": {
+    "source": "./chat-exports",
+    "output": "../photo-planet/data/chat",
+    "stateDir": "./chat-cache"
+  },
+  "import": {
+    "expectedChatId": "",
+    "selfIds": [],
+    "selfLabels": [
+      "我"
+    ],
+    "otherLabels": [],
+    "systemLabels": [
+      "系统"
+    ],
+    "timestampUnit": "seconds",
+    "deriveTime": false,
+    "fields": {
+      "chat_username": "chat_username",
+      "sender_username": "sender_username",
+      "sender": "sender",
+      "timestamp": "timestamp",
+      "time": "time",
+      "type": "type",
+      "server_id": "server_id",
+      "local_id": "local_id",
+      "source_database": "source_database",
+      "content": "content"
+    },
+    "filePatterns": [
+      "*.jsonl",
+      "聊天记录.json",
+      "*本机全部历史.json",
+      "full.json",
+      "increment*.json"
+    ]
+  }
+}

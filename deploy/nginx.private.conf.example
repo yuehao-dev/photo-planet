@@ -1,0 +1,63 @@
+# HTTPS example for /album/. Replace domain and certificate paths.
+# This does not replace your existing nginx.conf. Gateway port stays internal.
+upstream planet_gateway { server gateway:3000; }
+server {
+  listen 443 ssl;
+  server_name album.example.com;
+  ssl_certificate /etc/nginx/tls/fullchain.pem;
+  ssl_certificate_key /etc/nginx/tls/privkey.pem;
+  root /srv/planet;
+  index index.html;
+  server_tokens off;
+  autoindex off;
+  add_header X-Content-Type-Options nosniff always;
+  add_header Referrer-Policy same-origin always;
+  add_header Cache-Control private always;
+  gzip on;
+  gzip_types text/css application/javascript application/json image/svg+xml;
+
+  location = /album { return 308 /album/; }
+  location = /album/login {
+    proxy_pass http://planet_gateway/auth/login;
+    proxy_set_header X-Album-Client-IP $remote_addr;
+    proxy_set_header Origin $http_origin;
+    proxy_set_header Authorization "";
+  }
+  location = /album/logout {
+    proxy_pass http://planet_gateway/auth/logout;
+    proxy_set_header X-Album-Client-IP $remote_addr;
+    proxy_set_header Origin $http_origin;
+    proxy_set_header Authorization "";
+  }
+  location = /_planet_auth {
+    internal;
+    proxy_pass http://planet_gateway/auth/check;
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+    proxy_set_header X-Album-Client-IP $remote_addr;
+    proxy_set_header Authorization $http_authorization;
+    proxy_set_header Cookie $http_cookie;
+  }
+  location = /album/session {
+    proxy_pass http://planet_gateway/auth/session;
+    proxy_set_header X-Album-Client-IP $remote_addr;
+    proxy_set_header Cookie $http_cookie;
+    proxy_set_header Authorization $http_authorization;
+  }
+  location /album/media/ {
+    auth_request /_planet_auth;
+    proxy_pass http://planet_gateway/media/;
+  }
+  location /album/data/chat/ {
+    auth_request /_planet_auth;
+    proxy_pass http://planet_gateway/data/chat/;
+  }
+  location /album/ {
+    auth_request /_planet_auth;
+    error_page 401 =303 /album/login;
+    # Serve only an unpacked runtime archive here, not the source repository.
+    try_files $uri $uri/ =404;
+  }
+  location ~ /\. { deny all; }
+  location / { return 404; }
+}

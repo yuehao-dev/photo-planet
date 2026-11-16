@@ -1,0 +1,209 @@
+/* iPhone / iPad：两条轻导航，照片保留呼吸的留白。 */
+:root { --topbar-h: calc(48px + env(safe-area-inset-top)); --season-rail-h: 44px; --maxw: 1264px; --pad: clamp(18px, 4vw, 48px); }
+.topbar { height: var(--topbar-h); padding: env(safe-area-inset-top) max(var(--pad), calc((100vw - 1168px) / 2)) 0; gap: 10px; background: rgba(250, 246, 238, .94); border-bottom: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.brand { min-width: 0; gap: 6px; font-size: 12px; }
+.brand-text { display: inline; overflow: hidden; text-overflow: ellipsis; }
+.topbar-actions { flex: none; gap: 8px; }
+.browse-menu { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 6px; font-size: 11px; }
+.browse-menu svg { width: 18px; height: 18px; stroke: var(--ink); fill: var(--paper); stroke-width: 1.5; }
+.topfav { min-height: 44px; height: 44px; border: 0; padding: 0 5px; font-size: 11px; }
+.topfav:hover { transform: none; }
+.topfav-label { display: inline; }
+.season-rail { position: fixed; z-index: 99; left: 0; right: 0; top: var(--topbar-h); height: var(--season-rail-h); display: flex; justify-content: center; gap: 8px; padding: 0 max(var(--pad), calc((100vw - 640px) / 2)); border-bottom: 1px solid var(--line); background: rgba(250, 246, 238, .94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.season-rail button { position: relative; min-width: 0; flex: 1; min-height: 44px; font-size: 13px; color: var(--ink-soft); }
+.season-rail button::before { content: ''; position: absolute; inset: 6px 0; border-radius: 40px; background: var(--season-wash); opacity: 0; z-index: -1; }
+.season-rail button[aria-pressed='true'] { color: var(--season-ink); font-weight: 600; }
+.season-rail button[aria-pressed='true']::before { opacity: 1; }
+.season-rail button[data-season-choice='spring'] { --season-wash: #e5eedc; --season-ink: #426744; }
+.season-rail button[data-season-choice='summer'] { --season-wash: #f9ecc2; --season-ink: #8b651a; }
+.season-rail button[data-season-choice='autumn'] { --season-wash: #f6e5d6; --season-ink: #9c562c; }
+.season-rail button[data-season-choice='winter'] { --season-wash: #e1eaf4; --season-ink: #41668f; }
+.rail-dot { position: absolute; bottom: 3px; left: calc(50% - 2px); width: 4px; height: 4px; background: var(--season-ink); border-radius: 50%; opacity: 0; }
+.is-current .rail-dot { opacity: 1; }
+.hero { padding-top: calc(var(--topbar-h) + var(--season-rail-h) + 65px); }
+.hero-title { font-size: clamp(60px, 7.5vw, 108px); }
+.gallery, .footer, .hero { max-width: var(--maxw); margin-inline: auto; }
+.gallery { scroll-margin-top: calc(var(--topbar-h) + var(--season-rail-h) + 15px); }
+.gallery .section-head { padding-top: 12px; padding-bottom: 20px; }
+.gallery .section-note { position: static; display: block; margin-top: 12px; font-size: 13px; color: var(--ink-soft); }
+.season-heading { font-size: clamp(30px, 4vw, 47px); }
+.season-picker { scroll-margin-top: calc(var(--topbar-h) + var(--season-rail-h) + 16px); gap: 12px; }
+.season-choice { min-height: 156px; }
+.all-seasons { display: inline-flex; justify-content: center; align-items: center; gap: 12px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 99px; padding: 0 18px; background: #fffaf0; color: var(--ink); font-size: 12px; box-shadow: 0 2px 0 #352b1710; }
+.all-seasons[aria-pressed='true'] { border-color: var(--season-ink); }
+.all-seasons span { font-size: 17px; margin: 0; }
+.album-position { display: flex; flex-direction: column; gap: 4px; }
+.album-position .now-month { font-size: 11px; }
+.album-position h3 { font-size: 14px; }
+.album-summary { margin-bottom: 12px; }
+.chapter-head { padding-top: 26px; padding-bottom: 25px; }
+.chapter { scroll-margin-top: calc(var(--topbar-h) + var(--season-rail-h) + 12px); }
+.cursor { display: none !important; }
+.has-cursor, .has-cursor * { cursor: auto; }
+button, a { -webkit-tap-highlight-color: transparent; }
+body.sheet-open { overflow: hidden; }
+.album-sheet { position: fixed; inset: auto 0 0; width: min(560px, 100%); max-height: min(85dvh, 820px); padding: 0; margin: auto auto 0; border: 1px solid var(--line); border-bottom: 0; border-radius: 26px 26px 0 0; background: #fffaf1; color: var(--ink); overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 -10px 80px #231b1826; }
+.album-sheet::backdrop { background: rgba(27, 25, 22, .32); backdrop-filter: blur(3px); }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 26px 24px 18px; border-bottom: 1px solid var(--line); }
+.sheet-head .eyebrow { font-size: 8px; letter-spacing: .14em; margin-bottom: 5px; }
+.sheet-head h2 { font-family: var(--display); font-size: 25px; font-weight: 500; }
+.sheet-close { flex: none; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; font-size: 25px; }
+.sheet-body { padding: 22px 24px calc(28px + env(safe-area-inset-bottom)); }
+.sheet-body h3 { margin: 0 0 13px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+.album-sheet .modes { position: static; transform: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; padding: 0; border: 0; background: none; margin-bottom: 26px; }
+.album-sheet .modes-pill { display: none; }
+.album-sheet .modes button { width: 100%; min-height: 60px; height: auto; gap: 7px; border: 1px solid var(--line); border-radius: 14px; font-size: 11px; padding: 10px 6px; }
+.album-sheet .modes button[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.album-sheet .mode-label, .album-sheet .modes svg { display: inline; }
+.album-sheet .filters { position: static; top: auto; display: block; background: none; backdrop-filter: none; padding: 0; border: 0; margin: 0 0 20px; }
+.album-sheet .chips { display: flex; flex-wrap: wrap; gap: 8px; overflow: visible; white-space: normal; }
+.album-sheet .chip { min-height: 44px; padding: 0 15px; font-size: 11px; }
+.album-sheet .filter-label { align-self: center; }
+.sheet-link { width: 100%; min-height: 50px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); font-size: 13px; }
+.sheet-intro, .sheet-footnote { font-size: 12px; line-height: 1.8; color: var(--ink-soft); }
+.sheet-intro { margin-bottom: 22px; }
+.sheet-footnote { margin-top: 18px; font-size: 11px; }
+.tag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.tag-row input { min-width: 0; width: 100%; flex: 1; border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px; font-size: 16px; color: var(--ink); background: #fffdf8; }
+.tag-row label { white-space: nowrap; font-size: 10px; color: var(--ink-soft); }
+.tag-row button { min-height: 44px; white-space: nowrap; font-size: 11px; padding: 0 6px; }
+.tag-delete { color: #a44830; }
+#tagContent label { font-size: 12px; }
+#photoTags { display: block; width: 100%; margin: 12px 0 16px; resize: vertical; border: 1px solid var(--line-strong); padding: 12px; border-radius: 12px; font: 16px/1.8 var(--ui); background: #fffdf8; color: var(--ink); }
+.sheet-primary { min-height: 46px; padding: 0 22px; border-radius: 99px; background: var(--ink); color: var(--paper); font-size: 13px; }
+.tag-transfer { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.tag-transfer button, .tag-import { display: flex; align-items: center; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; font-size: 12px; cursor: pointer; }
+.tag-import { position: relative; overflow: hidden; }
+.tag-import input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+#tagStatus { font-size: 12px; color: var(--season-ink); margin-top: 16px; }
+.lb-edit { margin-left: auto; margin-right: 15px; min-height: 44px; padding: 0 16px; border: 1px solid #ffffff36; border-radius: 99px; color: inherit; font-size: 12px; }
+.music-dock { padding: 4px; max-width: 100px; border-radius: 30px; }
+.music-toggle { padding: 0; }
+.music-text, .music-bars { display: none; }
+.music-dock[data-state='blocked'] { max-width: calc(100vw - 95px); }
+.music-dock[data-state='blocked'] .music-text { display: flex; padding-right: 10px; }
+.music-dock[data-state='blocked'] #musicTitle { display: none; }
+.music-dock[data-state='blocked'] #musicStatus { font-size: 11px; }
+.music-record { width: 44px; height: 44px; }
+.volume-toggle { position: static; width: 44px; height: 44px; min-height: 44px; margin: 0; border: 0; background: transparent; }
+.volume-toggle svg { width: 16px; height: 16px; pointer-events: none; }
+.volume-panel { width: min(290px, calc(100vw - 35px)); bottom: calc(100% + 23px); padding: 20px; border-radius: 20px; }
+.music-panel-heading { font-family: var(--display); font-size: 18px; margin-bottom: 6px; }
+#musicSetName { font-size: 12px; color: var(--ink-soft); }
+.music-next { width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin: 13px 0 5px; border: 1px solid var(--line-strong); border-radius: 99px; padding: 0 15px; font-size: 12px; }
+.music-next:disabled { opacity: .55; cursor: default; }
+#musicSetHint { display: block; font-size: 11px; line-height: 1.7; color: var(--ink-soft); margin-bottom: 20px; }
+body[data-mode='reel'] .season-picker { display: none; }
+body[data-mode='reel'] .card-media { max-width: min(900px, 86vw); }
+body[data-mode='reel'] .empty { inset: calc(var(--topbar-h) + var(--season-rail-h)) 0 75px; }
+.reel-ui { bottom: calc(35px + env(safe-area-inset-bottom)); max-width: 65vw; margin-inline: auto; }
+.fab-add { width: 48px; height: 48px; }
+@media (max-width: 700px) {
+  .hero { padding-top: calc(var(--topbar-h) + var(--season-rail-h) + 35px); }
+  .hero-title { font-size: clamp(42px, 12vw, 56px); }
+  .hero .scroll-cue { display: none; }
+  .brand-text { font-size: 11px; }
+  .topbar { padding-inline: 18px; }
+  .topbar-actions { gap: 3px; }
+  .topfav-label { display: none; }
+  .browse-menu { font-size: 10px; }
+  .season-choice { min-height: 136px; }
+  .season-picker { gap: 10px; margin-bottom: 25px; }
+  .album-summary { align-items: center; gap: 8px; }
+  .album-position h3 { font-size: 12px; gap: 5px; }
+  .all-seasons { padding-inline: 13px; font-size: 11px; gap: 6px; }
+  .music-dock { max-width: 100px; }
+  .music-record { width: 44px; height: 44px; }
+  .chapter-head { padding-top: 20px; padding-bottom: 20px; }
+  .chapter-head .ch-meta { max-width: 49vw; }
+  .reel-ui { gap: 8px; }
+  .reel-hint { display: none; }
+}
+@media (min-width: 701px) {
+  .album-sheet { inset: 0; margin: auto; border-radius: 24px; border-bottom: 1px solid var(--line); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .album-sheet[open] { animation: sheet-appear .24s ease-out; }
+  @keyframes sheet-appear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+}
+/* 不确定的日子：仍是一页相册，不伪造日期或强行归入冬天。 */
+#albumStart { scroll-margin-top: calc(var(--topbar-h) + var(--season-rail-h) + 18px); }
+.undated-entry { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 20px; margin: 10px 0 12px; border: 1px dashed var(--line-strong); border-radius: 18px; text-align: left; background: #fffaf099; font-size: 13px; line-height: 1.6; }
+.undated-entry[hidden] { display: none; }
+.undated-entry[aria-pressed='true'] { border-style: solid; background: #f4ebda; }
+.undated-entry small { display: block; color: var(--ink-soft); font-size: 11px; }
+.undated-entry > span:last-child { white-space: nowrap; font-size: 12px; }
+.undated-entry b { font-weight: 400; }
+.chapter[data-month='unknown'] .ch-title { font-size: clamp(20px, 3.8vw, 34px); }
+body[data-mode='flow'] .chapter[data-month='unknown'] .chapter-head { grid-template-columns: auto 1fr; gap: 8px 16px; }
+body[data-mode='flow'] .chapter[data-month='unknown'] .ch-meta { grid-column: 2; text-align: left; }
+.memory-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
+.memory-fields select, .memory-fields input { width: 100%; min-width: 0; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 12px; font: 16px var(--ui); color: var(--ink); background: #fffdf8; }
+.memory-fields select:disabled { opacity: .72; }
+.memory-fields [hidden] { display: none; }
+.memory-fields .sheet-footnote { margin: 0; }
+.memory-restore { justify-self: start; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; font-size: 11px; color: var(--ink-soft); }
+body[data-mode='reel'] .undated-entry { display: none; }
+@media (max-width: 600px) {
+  body[data-mode='flow'] .chapter[data-month='unknown'] .chapter-head { grid-template-columns: 1fr; }
+  body[data-mode='flow'] .chapter[data-month='unknown'] .ch-meta { grid-column: 1; max-width: none; width: 100%; margin-top: 0; }
+  .album-summary { flex-wrap: wrap; }
+}
+
+/* Keep touch scrolling on native layers, with no per-photo animation surfaces. */
+@media (hover: none), (pointer: coarse) {
+  .card {
+    will-change: auto;
+    transform: none !important;
+    transition: none;
+  }
+  .card .card-media,
+  .card.is-in .card-media,
+  .card:active .card-media,
+  .card:hover .card-media {
+    clip-path: none;
+    animation: none;
+    transition: none;
+    filter: none;
+    transform: none;
+    box-shadow: none;
+  }
+  .card .card-media img,
+  .card:hover .card-media img.is-loaded {
+    transform: none;
+    transition: opacity .16s ease;
+  }
+  .topbar,
+  .topbar.is-stuck,
+  .season-rail,
+  .music-dock,
+  .card .fav {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .topbar,
+  .topbar.is-stuck,
+  .season-rail { background: #faf6ee; }
+  .topbar { transition: none; }
+  .music-dock { background: #fffcf5; }
+  .card .fav { background: #fffaf0; }
+  .grain { mix-blend-mode: normal; }
+  .season::before,
+  .season::after { animation: none !important; }
+  /* Stable layout while iOS expands/collapses the address bar. */
+  body[data-mode='reel'] .card { height: 100svh; }
+  body[data-mode='reel'] .card-media {
+    max-height: calc(100svh - var(--topbar-h) - var(--season-rail-h) - 165px);
+    width: min(86vw, calc((100svh - var(--topbar-h) - var(--season-rail-h) - 165px) * var(--nr, 1)));
+  }
+}
+
+@supports (content-visibility: auto) {
+  @media (hover: none), (pointer: coarse) {
+    /* Grid rows already reserve the exact size; skipped photo interiors cannot move the page. */
+    body[data-mode='flow'] .card-media {
+      content-visibility: auto;
+      contain: layout paint;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+private
+secrets
+raw
+imports
+node_modules
+.venv
+__pycache__
+**/__pycache__
+*.zip
+*.sqlite*
+test-results
+dist
+releases

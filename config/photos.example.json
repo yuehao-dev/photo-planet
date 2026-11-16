@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "source": "./photos",
+  "thumbWidth": 880,
+  "fullWidth": 1500,
+  "quality": 80,
+  "workers": 4
+}

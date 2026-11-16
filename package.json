@@ -1,0 +1,18 @@
+{
+  "name": "photo-planet",
+  "version": "1.1.0",
+  "private": true,
+  "description": "A seasonal photo album and date-based chat reader with fictional demo data",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test deploy/oss-gateway/test.cjs deploy/oss-gateway/auth.test.cjs deploy/oss-gateway/login.test.cjs deploy/oss-gateway/media.test.cjs deploy/oss-gateway/registry.test.cjs tests/config.test.cjs",
+    "test:browser": "node tests/browser-smoke.cjs",
+    "check:config": "node tools/check_config.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

@@ -1,0 +1,68 @@
+/* 触屏体验补丁：只追加交互、安全区与视口适配 */
+@media (hover: none) {
+  .card:active .card-media {
+    filter: brightness(.94);
+    transform: scale(.985);
+  }
+
+  .chip:active,
+  .btn:active,
+  .topfav:active,
+  .fav:active {
+    transform: scale(.97);
+  }
+}
+
+/* 刘海与底部手势区域 */
+.reel-ui {
+  bottom: calc(26px + env(safe-area-inset-bottom));
+}
+
+.topbar {
+  padding-top: env(safe-area-inset-top);
+}
+
+.fab-add {
+  right: calc(20px + env(safe-area-inset-right));
+  bottom: calc(22px + env(safe-area-inset-bottom));
+}
+
+@supports (height: 100dvh) {
+  body[data-mode='reel'] .card {
+    height: 100dvh;
+  }
+}
+
+/* 扩大收藏热区，不改变按钮的视觉尺寸 */
+.fav::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+body[data-mode='timeline'] .fav::after {
+  inset: -14px;
+}
+
+.card,
+.card-btn,
+.chip,
+.btn,
+.topfav,
+.fav {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 仅限制页面回弹，保留 .chapters 原有的 contain */
+body {
+  overscroll-behavior-y: none;
+}
+
+@media (max-width: 760px) {
+  .hero-title,
+  .section-title,
+  .ch-title,
+  .footer-big {
+    text-wrap: balance;
+  }
+}

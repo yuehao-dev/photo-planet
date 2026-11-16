@@ -1,0 +1,39 @@
+# Local credentials and private deployment settings
+.env
+.env.*
+!.env.example
+private/
+secrets/
+raw/
+imports/
+*.pem
+*.key
+*.p12
+*.pfx
+*.htpasswd
+gateway.json
+oss.json
+auth.json
+
+# Offline import state, editor files, local artifacts
+__pycache__/
+*.py[cod]
+*.sqlite*
+*.db
+*.db-*
+*.log
+*.bak
+*.tmp
+.venv/
+venv/
+node_modules/
+test-results/
+playwright-report/
+dist/
+releases/
+*.zip
+.DS_Store
+Thumbs.db
+
+# Tracked data/public/demo-media contain fictional fixtures only.
+# Before importing personal data, run: python tools/prepare_private.py --confirm

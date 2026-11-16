@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "fictional": true,
+    "message_count": 8
+  },
+  "messages": [
+    {
+      "timestamp": 1741426200,
+      "time": "2025-03-08T17:30:00+08:00",
+      "sender": "小夏",
+      "sender_username": "wxid_demo_her",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10001",
+      "local_id": 1,
+      "source_database": "demo.db",
+      "content": "今天拍到一朵很像小云的花。"
+    },
+    {
+      "timestamp": 1741426260,
+      "time": "2025-03-08T17:31:00+08:00",
+      "sender": "我",
+      "sender_username": "wxid_demo_me",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10002",
+      "local_id": 2,
+      "source_database": "demo.db",
+      "content": "那就把小云也收进相册。"
+    },
+    {
+      "timestamp": 1741426320,
+      "time": "2025-03-08T17:32:00+08:00",
+      "sender": "小夏",
+      "sender_username": "wxid_demo_her",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10003",
+      "local_id": 3,
+      "source_database": "demo.db",
+      "content": "路边那家面馆开门啦。"
+    },
+    {
+      "timestamp": 1741426380,
+      "time": "2025-03-08T17:33:00+08:00",
+      "sender": "我",
+      "sender_username": "wxid_demo_me",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10004",
+      "local_id": 4,
+      "source_database": "demo.db",
+      "content": "等你，我们一起去。"
+    },
+    {
+      "timestamp": 1741426440,
+      "time": "2025-03-08T17:34:00+08:00",
+      "sender": "小夏",
+      "sender_username": "wxid_demo_her",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10005",
+      "local_id": 5,
+      "source_database": "demo.db",
+      "content": "这张照片要留好。"
+    },
+    {
+      "timestamp": 1741426500,
+      "time": "2025-03-08T17:35:00+08:00",
+      "sender": "我",
+      "sender_username": "wxid_demo_me",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10006",
+      "local_id": 6,
+      "source_database": "demo.db",
+      "content": "已经悄悄收藏了。"
+    },
+    {
+      "timestamp": 1741426560,
+      "time": "2025-03-08T17:36:00+08:00",
+      "sender": "小夏",
+      "sender_username": "wxid_demo_her",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10007",
+      "local_id": 7,
+      "source_database": "demo.db",
+      "content": "回家路上慢一点。"
+    },
+    {
+      "timestamp": 1741426620,
+      "time": "2025-03-08T17:37:00+08:00",
+      "sender": "我",
+      "sender_username": "wxid_demo_me",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10008",
+      "local_id": 8,
+      "source_database": "demo.db",
+      "content": "好，等下给你带一杯热的。"
+    }
+  ]
+}

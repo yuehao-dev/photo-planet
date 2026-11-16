@@ -1,0 +1,124 @@
+/* 四季相册：保留纸张与照片的主角感，让选择与音乐始终触手可及。 */
+:root { --season-ink: #a75329; --season-wash: #fbecda; --season-rail-h: 58px; }
+html[data-season='spring'] { --season-ink: #47704d; --season-wash: #e9f1df; }
+html[data-season='summer'] { --season-ink: #9c7117; --season-wash: #fff0bd; }
+html[data-season='winter'] { --season-ink: #496d97; --season-wash: #e5edf7; }
+.gallery { padding-bottom: 48px; scroll-margin-top: 90px; }
+.gallery .section-head { position: relative; padding-bottom: 26px; }
+.season-heading { font-size: clamp(32px, 4.1vw, 60px); letter-spacing: -.045em; }
+.section-note { margin-top: 14px; }
+.season-picker { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 4px 0 34px; scroll-margin-top: calc(var(--topbar-h) + 20px); }
+.season-choice { position: relative; isolation: isolate; display: flex; align-items: center; min-height: 172px; padding: 26px 22px; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--tile); text-align: left; color: var(--tone); }
+.season-choice[data-season-choice='spring'] { --tile: #edf2e3; --tone: #476c43; --art: #c1d7a9; }
+.season-choice[data-season-choice='summer'] { --tile: #fff2cf; --tone: #976d16; --art: #f5cb5f; }
+.season-choice[data-season-choice='autumn'] { --tile: #f7e7d8; --tone: #a05a37; --art: #e9b887; }
+.season-choice[data-season-choice='winter'] { --tile: #e9eef5; --tone: #4f7096; --art: #c2d7ec; }
+.season-choice::after { content: ''; position: absolute; inset: 0; border: 2px solid var(--tone); border-radius: inherit; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.season-choice[aria-pressed='true']::after { opacity: .85; }
+.season-copy { position: relative; z-index: 1; display: grid; gap: 4px; }
+.season-en { font-size: 9px; letter-spacing: .14em; font-weight: 600; }
+.season-copy strong { font-family: var(--display); font-size: 50px; line-height: 1.2; font-weight: 500; }
+.season-caption { font-size: 12px; letter-spacing: .02em; }
+.season-count { position: absolute; right: 16px; bottom: 17px; font-size: 10px; letter-spacing: .06em; opacity: .8; }
+.season-art { position: absolute; width: 88px; height: 88px; right: 12px; top: 18px; transform: rotate(7deg); opacity: .9; }
+.season-art svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.season-art .petal, .season-art .leaf, .season-art .sun, .season-art .snow-halo { fill: var(--art); }
+.season-art .snow-halo { stroke: none; opacity: .55; }
+.season-selected { position: absolute; right: 15px; top: 10px; font-size: 19px; opacity: 0; transform: translate(-5px, 5px); transition: opacity .25s, transform .25s; }
+.season-choice[aria-pressed='true'] .season-selected { opacity: 1; transform: none; }
+.season-choice[aria-pressed='true'] .season-art { opacity: .65; }
+.album-summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+.album-summary h3 { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: 17px; font-weight: 500; }
+.album-summary #totalNum { color: var(--ink-soft); font-family: var(--display); font-size: 13px; }
+.all-seasons { font-size: 12px; padding: 8px 0 8px 12px; color: var(--ink-soft); white-space: nowrap; }
+.all-seasons[aria-pressed='true'] { color: var(--ink); }
+.all-seasons span { margin-left: 5px; }
+.filters { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.card.is-out { display: none !important; }
+.empty { padding-bottom: 60px; }
+.empty-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
+.empty-actions .btn { margin: 0; }
+.empty-doodle { color: var(--season-ink); }
+.footer { padding-bottom: 130px; }
+.music-dock { position: fixed; z-index: 220; bottom: calc(20px + env(safe-area-inset-bottom)); left: 24px; display: flex; align-items: center; max-width: calc(100vw - 100px); padding: 6px; border: 1px solid rgba(60, 48, 30, .13); border-radius: 50px; background: rgba(255, 252, 245, .94); box-shadow: 0 6px 30px #3d2c0e13, inset 0 1px 0 #fff; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.music-toggle { display: flex; align-items: center; gap: 11px; padding: 0 4px 0 0; text-align: left; border-radius: 40px; min-width: 0; }
+.music-record { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 50%; color: var(--paper); background: repeating-radial-gradient(circle, #2a2923 0 2px, #3b3932 3px, #2a2923 4px); }
+.music-record svg { grid-area: 1/1; width: 16px; height: 16px; fill: #fff2c7; stroke: none; }
+.music-pause { display: none; }
+.music-dock[data-playing='true'] .music-pause { display: block; }
+.music-dock[data-playing='true'] .music-play { display: none; }
+.music-text { display: flex; flex-direction: column; min-width: 0; }
+#musicTitle { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; }
+#musicStatus { color: var(--ink-soft); font-size: 10px; letter-spacing: .025em; }
+.music-bars { display: flex; align-items: center; gap: 2px; height: 18px; margin: 0 8px 0 4px; color: var(--season-ink); }
+.music-bars i { width: 2px; height: 12px; background: currentColor; border-radius: 3px; transform: scaleY(.3); }
+.volume-toggle { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border-left: 1px solid var(--line); }
+.volume-toggle svg { width: 16px; height: 16px; fill: none; stroke: var(--ink-soft); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.volume-panel { position: absolute; bottom: calc(100% + 10px); left: 0; width: 250px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 8px 30px #3d2c0e13; background: #fffaf0; }
+.volume-panel label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; }
+.volume-panel output { color: var(--ink-soft); }
+.volume-panel input { width: 100%; accent-color: var(--season-ink); cursor: pointer; min-height: 30px; }
+body.is-locked .music-dock, body.is-locked .fab-add { visibility: hidden; }
+body[data-mode='reel'] .season-picker { visibility: visible; position: fixed; z-index: 96; top: var(--topbar-h); left: 0; right: 0; margin: 0; padding: 8px max(20px, calc((100vw - 580px)/2)); height: var(--season-rail-h); gap: 6px; background: rgba(250, 246, 238, .9); backdrop-filter: blur(16px); }
+body[data-mode='reel'] .season-choice { min-height: 0; height: 42px; padding: 0; border-radius: 50px; justify-content: center; }
+body[data-mode='reel'] .season-copy { display: block; }
+body[data-mode='reel'] .season-copy strong { font-size: 19px; }
+body[data-mode='reel'] .season-art, body[data-mode='reel'] .season-en, body[data-mode='reel'] .season-caption, body[data-mode='reel'] .season-count, body[data-mode='reel'] .season-selected { display: none; }
+body[data-mode='reel'] .card { padding-top: calc(var(--topbar-h) + var(--season-rail-h)); padding-bottom: 115px; }
+body[data-mode='reel'] .card-media { max-height: calc(100dvh - var(--topbar-h) - var(--season-rail-h) - 165px); width: min(86vw, calc((100dvh - var(--topbar-h) - var(--season-rail-h) - 165px) * var(--nr, 1))); }
+body[data-mode='reel'] .empty { visibility: visible; position: fixed; inset: calc(var(--topbar-h) + var(--season-rail-h)) 0 90px; overflow-y: auto; padding: 30px 20px; z-index: 94; }
+.reel-ui { bottom: calc(88px + env(safe-area-inset-bottom)); }
+body[data-mode='reel'] .music-dock { z-index: 220; }
+body[data-mode='timeline'] .chapter { scroll-margin-top: 140px; }
+.card img { color: transparent; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .season-choice { transition: transform .3s var(--ease-out); }
+  .season-choice:hover { transform: translateY(-4px); }
+  .season-choice:hover .season-art { transform: rotate(-5deg); }
+  .season-art { transition: transform .5s var(--ease-out), opacity .25s; }
+  .volume-toggle:hover { background: var(--paper-2); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .music-dock[data-playing='true'] .music-bars i { animation: music-breathe 1s ease-in-out infinite alternate; }
+  .music-bars i:nth-child(2) { animation-delay: -.7s !important; }
+  .music-bars i:nth-child(3) { animation-delay: -.35s !important; }
+  @keyframes music-breathe { to { transform: scaleY(1); } }
+}
+@media (max-width: 1100px) {
+  .season-choice { padding: 22px 17px; min-height: 160px; }
+  .season-art { width: 70px; height: 70px; right: 8px; top: 24px; }
+  .season-copy strong { font-size: 45px; }
+}
+@media (max-width: 700px) {
+  .season-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 25px; }
+  .season-choice { min-height: 139px; padding: 17px; border-radius: 16px; }
+  .season-copy strong { font-size: 39px; }
+  .season-en { font-size: 8px; }
+  .season-caption { font-size: 11px; }
+  .season-art { width: 68px; height: 68px; right: 9px; top: 24px; opacity: .7; }
+  .season-count { right: 12px; bottom: 13px; font-size: 9px; }
+  .season-selected { right: 12px; top: 7px; }
+  .gallery .section-head { padding-bottom: 20px; }
+  .season-heading { font-size: clamp(28px, 7.6vw, 42px); }
+  .section-note { max-width: 290px; font-size: 12px; }
+  .album-summary h3 { font-size: 14px; gap: 6px; }
+  .all-seasons { font-size: 11px; padding-left: 0; }
+  .music-dock { left: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); padding: 5px; max-width: calc(100vw - 88px); }
+  .music-record { width: 35px; height: 35px; }
+  .music-toggle { gap: 8px; }
+  #musicTitle { max-width: calc(100vw - 212px); font-size: 11px; }
+  #musicStatus { font-size: 9px; }
+  .music-bars { display: none; }
+  .volume-toggle { width: 29px; height: 31px; margin-left: 3px; }
+  .fab-add { width: 46px; height: 46px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); }
+  body[data-mode='reel'] .season-picker { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-inline: 20px; }
+  .empty-title { font-size: 22px; }
+  .empty-sub { max-width: 290px; margin-inline: auto; }
+}
+@media (max-width: 360px) {
+  .topfav-label { display: none; }
+  .season-choice { padding-inline: 12px; }
+  .season-art { width: 55px; right: 5px; }
+  .season-caption { font-size: 10px; }
+  .album-summary { align-items: flex-start; }
+}

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="cream">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="same-origin">
+  <title>那天的话 · 小夏的照片星球</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/planet.svg">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/chat.css?v=10">
+  <link rel="stylesheet" href="assets/css/chat-media.css?v=13-rich">
+  <link rel="stylesheet" href="assets/css/chat-reader.css?v=16">
+  <link rel="stylesheet" href="assets/css/preferences.css?v=16">
+  <script src="config/site.js?v=1.1"></script>
+<script src="assets/js/site-config.js?v=1.1"></script>
+<script src="assets/js/preferences.js?v=1.1"></script>
+  <script src="assets/js/photo-dates.js?v=10" defer></script>
+  <script src="assets/js/chat-data.js?v=16" defer></script>
+  <script src="assets/js/chat-media.js?v=16" defer></script>
+  <script src="assets/js/chat-render.js?v=16" defer></script>
+  <script src="assets/js/chat-reader.js?v=16" defer></script>
+</head>
+<body class="chat-page" data-page="chat">
+  <div class="reader-shell">
+    <header class="reader-topbar">
+      <a class="reader-back" href="./">← 回到相册</a>
+      <div class="reader-wordmark"><span class="reader-star" aria-hidden="true">✧</span><span data-site-copy="chatTitle">那天的话</span></div>
+      <button type="button" class="reader-settings" data-open-preferences aria-haspopup="dialog">按你的习惯</button>
+    </header>
+    <main class="archive-layout">
+      <aside id="desktopDates" class="archive-sidebar" aria-label="选一个聊天的日子">
+        <div id="calendarSurface" class="calendar-surface">
+          <p class="reader-eyebrow">LITTLE CONVERSATIONS</p>
+          <h1>有些话，<br>想再听一遍。</h1>
+          <p id="archiveStats" class="archive-stats">正在收好这些日子…</p>
+          <div class="calendar-month-nav">
+            <button type="button" id="monthPrevious" aria-label="上一个月">‹</button>
+            <label class="sr-only" for="calendarMonth">选择月份</label><input type="month" id="calendarMonth">
+            <button type="button" id="monthNext" aria-label="下一个月">›</button>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+          <div class="calendar-grid" id="calendarGrid" aria-label="这个月的聊天日期"></div>
+          <p class="calendar-note">有小点的日子，都藏着我们的几句话。</p>
+          <label class="date-jump-label" for="dateJump">也可以直接选一天</label><input type="date" id="dateJump">
+          <div class="calendar-actions"><button type="button" id="randomDate">随便翻一天 ↗</button><button type="button" id="resumeReading">接着上次读</button><button type="button" id="refreshRecords">看看新收的日子 ⟳</button></div>
+          <p class="reader-footnote">全部对话为虚构演示，不会连接微信或发送消息。</p>
+        </div>
+      </aside>
+      <section class="archive-reader" aria-label="聊天阅读区">
+        <header class="reader-day-head">
+          <div><p class="reader-eyebrow" id="readerDayEyebrow" data-site-copy="chatEyebrow">OUR LITTLE DAYS</p><h2 id="readerDate">慢慢翻到那一天</h2><p id="daySummary" role="status" aria-live="polite">正在打开聊天目录…</p></div>
+          <button type="button" id="openDates" class="reader-calendar-button" aria-haspopup="dialog">选日子 ▦</button>
+        </header>
+        <nav class="reader-day-nav" aria-label="翻到另一天">
+          <button type="button" id="previousDate" disabled>← 前一个日子</button>
+          <button type="button" id="quoteReturn" hidden>回到刚才那句 ↩</button>
+          <button type="button" id="nextDate" disabled>后一个日子 →</button>
+        </nav>
+        <form id="daySearch" class="reader-search" role="search" aria-label="搜索当前这一天的聊天">
+          <div class="reader-search-input"><label class="sr-only" for="searchText">在这一天找几句话</label><input id="searchText" type="search" maxlength="80" placeholder="在这一天，找几句话…" autocomplete="off"><button type="submit" id="searchSubmit">找一找</button></div>
+          <div class="reader-search-filters">
+            <label for="searchSender">谁说的<select id="searchSender"><option value="all">我们俩</option><option value="me" data-sender-label="me">阿屿</option><option value="her" data-sender-label="her">小夏</option></select></label>
+            <label for="searchKind">找什么<select id="searchKind"><option value="all">所有消息</option><option value="text">文字</option><option value="image">图片与表情</option><option value="audio">语音</option><option value="video">视频</option><option value="link">分享链接</option></select></label>
+            <button type="button" id="clearSearch" hidden>收起查找 ×</button>
+          </div>
+        </form>
+        <section id="searchResults" class="reader-results" aria-label="这一天的查找结果" hidden><p id="searchProgress" role="status" aria-live="polite"></p><div id="searchResultList"></div></section>
+        <div id="chatScroll" class="archive-scroll" tabindex="0" aria-label="聊天消息">
+          <button type="button" id="loadEarlier" class="reader-load-earlier" hidden>往前再翻一段 ↑</button>
+          <div id="chatMessages" class="archive-messages"></div>
+          <div id="nextSentinel" class="reader-next-sentinel"><button type="button" id="loadMore" hidden>接着翻后面的几句 ↓</button><span id="readStatus" role="status">这些话，马上就来。</span></div>
+        </div>
+        <footer class="reader-footer"><button type="button" id="firstMessage" disabled>第一句</button><p id="readerPosition" role="status" aria-live="polite"></p><button type="button" id="lastMessage" disabled>最后几句</button></footer>
+      </section>
+    </main>
+  </div>
+  <dialog id="dateDrawer" class="reader-date-drawer" aria-labelledby="dateDrawerTitle"><div class="date-drawer-head"><h2 id="dateDrawerTitle">想翻哪一天？</h2><button type="button" id="closeDates" aria-label="关闭日期选择">收好 ×</button></div><div id="mobileDates"></div></dialog>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-season="autumn" data-mode="flow">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>小夏的照片星球</title>
+
+<meta name="description" content="四季相册与聊天阅读器，当前内容为虚构演示。">
+
+<meta name="theme-color" content="#FAF6EE">
+
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" type="image/svg+xml" href="assets/icons/planet.svg">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+
+<link rel="shortcut icon" href="assets/icons/favicon.ico">
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+
+
+
+<link rel="preload" href="assets/fonts/fraunces-normal.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="preload" href="assets/fonts/notoserif-sc-subset.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="preload" href="assets/fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="stylesheet" href="assets/css/motion.css">
+
+<link rel="stylesheet" href="assets/css/album.css?v=10">
+
+<link rel="stylesheet" href="assets/css/touch.css?v=15-scroll">
+
+<link rel="stylesheet" href="assets/css/chat.css?v=10">
+
+<link rel="stylesheet" href="assets/css/preferences.css?v=16">
+
+<script src="config/site.js?v=1.1"></script>
+<script src="assets/js/site-config.js?v=1.1"></script>
+<script src="assets/js/preferences.js?v=1.1"></script>
+
+</head>
+
+<body>
+
+<!-- 季节背景：四层交叉淡入，跟随当前看到的照片 -->
+
+<div class="seasons" aria-hidden="true">
+
+  <div class="season season-spring"></div>
+
+  <div class="season season-summer"></div>
+
+  <div class="season season-autumn"></div>
+
+  <div class="season season-winter"></div>
+
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div class="cursor" id="cursor" aria-hidden="true">
+
+  <span class="cursor-dot"></span>
+
+  <span class="cursor-tip">看大图</span>
+
+</div>
+
+
+
+<header class="topbar" id="topbar">
+
+  <a class="brand" href="#top">
+
+    <span class="brand-mark" aria-hidden="true">
+
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2.6c.6 3.6 1.9 4.9 5.5 5.5-3.6.6-4.9 1.9-5.5 5.5-.6-3.6-1.9-4.9-5.5-5.5C10.1 7.5 11.4 6.2 12 2.6Z" fill="currentColor"/><path d="M18.4 14.2c.35 2.1 1.1 2.85 3.2 3.2-2.1.35-2.85 1.1-3.2 3.2-.35-2.1-1.1-2.85-3.2-3.2 2.1-.35 2.85-1.1 3.2-3.2Z" fill="currentColor"/></svg>
+
+    </span>
+
+    <span class="brand-text" data-personal-brand>小夏的照片星球</span>
+
+  </a>
+
+
+
+  <div class="topbar-actions">
+
+    <a class="top-chat-link" href="chat.html" data-site-copy="chatTitle">那天的话</a>
+
+    <button class="browse-menu" id="browseMenu" type="button" aria-haspopup="dialog" aria-label="换个方式看照片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg><span>怎么翻</span></button>
+
+    <button class="topfav" id="favFilterTop" aria-label="筛选收藏照片" aria-pressed="false" type="button">
+
+      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .9-4.35 4.3 1.03 6.05L12 17.1l-5.28 2.85 1.03-6.05L3.4 9.6l6-.9L12 3.2Z"/></svg>
+
+      <span class="topfav-label">收藏</span>
+
+      <b id="favCountTop">0</b>
+
+    </button>
+
+  </div>
+
+</header>
+
+<nav class="season-rail" id="seasonRail" aria-label="翻到哪个季节">
+
+  <button type="button" data-season-choice="all" aria-pressed="true">四季</button>
+
+  <button type="button" data-season-choice="spring" aria-pressed="false">春<span class="rail-dot"></span></button>
+
+  <button type="button" data-season-choice="summer" aria-pressed="false">夏<span class="rail-dot"></span></button>
+
+  <button type="button" data-season-choice="autumn" aria-pressed="false">秋<span class="rail-dot"></span></button>
+
+  <button type="button" data-season-choice="winter" aria-pressed="false">冬<span class="rail-dot"></span></button>
+
+</nav>
+
+
+
+<main id="top">
+
+
+
+  <!-- ── 首屏 ─────────────────────────────────────────────── -->
+
+  <section class="hero">
+
+    <div class="hero-inner">
+
+      <div class="hero-copy">
+
+        <p class="eyebrow"><span class="dot"></span><span data-site-copy="eyebrow">PRIVATE SPACE</span><span class="sep">·</span><span data-site-copy="badge">虚构数据演示</span></p>
+
+
+
+        <h1 class="hero-title">
+
+          <span class="line"><span data-personal-name>小夏的</span></span>
+
+          <span class="line"><span class="accent"><span data-personal-title>照片星球</span>
+
+            <svg class="spark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3c1.1 8.4 4.5 11.8 12.9 12.9C24.5 17 21.1 20.4 20 28.8 18.9 20.4 15.5 17 7.1 15.9 15.5 14.8 18.9 11.4 20 3Z" fill="currentColor"/></svg>
+
+          </span></span>
+
+        </h1>
+
+
+
+        <p class="personal-note" data-personal-note hidden></p>
+
+        <p class="hero-sub"><span data-site-copy="heroLead">一共</span> <b id="heroCount">—</b> <span data-site-copy="heroAfterCount">张照片，全都收在这颗小星球上。</span><br><span data-site-copy="heroSecondLine">不着急，慢慢翻。</span></p>
+
+
+
+        <div class="hero-actions">
+
+          <a class="btn btn-solid" href="#gallery">
+
+            <span data-site-copy="albumButton">翻开四季相册</span>
+
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          </a>
+
+          <button class="btn btn-outline" id="heroFavBtn" type="button">
+
+            <span>我的收藏</span><b id="favCountHero">0</b>
+
+          </button>
+
+          <button class="btn-round" id="shuffleBtn" type="button" aria-label="随便看一张" title="随便看一张">
+
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 7h3.2l9.6 10H20M20 7h-3.2L8.4 17H4M17 4l3 3-3 3M17 14l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          </button>
+
+        </div>
+
+
+
+        <p class="hero-meta"><span id="heroRange">—</span><span class="sep">·</span><span id="heroSpan">—</span></p>
+
+      </div>
+
+
+
+      <div class="hero-stack">
+
+        <figure class="hphoto hphoto-a"><img id="heroA" alt="" decoding="async"></figure>
+
+        <figure class="hphoto hphoto-b"><img id="heroB" alt="" decoding="async"></figure>
+
+        <figure class="hphoto hphoto-c"><img id="heroC" alt="" decoding="async"></figure>
+
+
+
+        <button class="sticker" id="sticker" type="button" aria-label="切换在一起的时间显示">
+
+          <span class="sticker-face face-days">
+
+            <em>在一起第</em><b id="daysNum">000</b><em>天</em>
+
+          </span>
+
+          <span class="sticker-face face-clock">
+
+            <em id="ymdText">— 个月 — 天</em>
+
+            <b id="clockText">00:00:00</b>
+
+          </span>
+
+          <i class="sticker-dot" aria-hidden="true"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <a class="scroll-cue" href="#gallery"><span></span>往下翻</a>
+
+  </section>
+
+
+
+  <!-- ── 走马灯 ───────────────────────────────────────────── -->
+
+  <div class="marquee" aria-hidden="true">
+
+    <div class="marquee-track">
+
+      <div class="marquee-group">
+
+        <span>小夏的照片星球</span><i>✦</i><span>HAPPY PLACE</span><i>✦</i><span>慢一点也没关系</span><i>✦</i><span>今天也要开心</span><i>✦</i><span>照片会一直加</span><i>✦</i>
+
+      </div>
+
+      <div class="marquee-group">
+
+        <span>小夏的照片星球</span><i>✦</i><span>HAPPY PLACE</span><i>✦</i><span>慢一点也没关系</span><i>✦</i><span>今天也要开心</span><i>✦</i><span>照片会一直加</span><i>✦</i>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ── 照片区 ───────────────────────────────────────────── -->
+
+  <section class="gallery" id="gallery">
+
+    <div class="section-head">
+
+      <p class="eyebrow"><span class="dot"></span><span data-site-copy="galleryEyebrow">FOUR SEASONS, LITTLE JOYS</span></p>
+
+      <h2 class="section-title season-heading">想翻哪个季节？</h2>
+
+      <p class="section-note">点一下，回到那时候。</p>
+
+    </div>
+
+
+
+    <div class="season-picker" id="seasonPicker" role="group" aria-label="按季节看照片">
+
+      <button class="season-choice" data-season-choice="spring" aria-pressed="false" aria-controls="chapters" type="button">
+
+        <span class="season-art" aria-hidden="true"><svg viewBox="0 0 80 80"><path d="M40 66V41M40 54l-15-8"/><path class="petal" d="M40 36C15 31 25 8 40 24 55 8 65 31 40 36 65 41 55 64 40 48 25 64 15 41 40 36Z"/><circle cx="40" cy="36" r="5"/><path class="leaf" d="M39 58c2-16 18-18 20-16-2 15-12 19-20 16Z"/></svg></span>
+
+        <span class="season-copy"><span class="season-en">SPRING · 01</span><strong>春</strong><span class="season-caption">把花开收藏</span></span>
+
+        <span class="season-count" data-season-count="spring">翻开看看</span><span class="season-selected" aria-hidden="true">↗</span>
+
+      </button>
+
+      <button class="season-choice" data-season-choice="summer" aria-pressed="false" aria-controls="chapters" type="button">
+
+        <span class="season-art" aria-hidden="true"><svg viewBox="0 0 80 80"><circle class="sun" cx="40" cy="36" r="15"/><path d="M40 9v6m0 42v6M13 36h6m42 0h6M21 17l5 5m28 28 5 5M21 55l5-5m28-28 5-5M20 70q10-6 20 0t20 0"/></svg></span>
+
+        <span class="season-copy"><span class="season-en">SUMMER · 02</span><strong>夏</strong><span class="season-caption">阳光分你一半</span></span>
+
+        <span class="season-count" data-season-count="summer">翻开看看</span><span class="season-selected" aria-hidden="true">↗</span>
+
+      </button>
+
+      <button class="season-choice" data-season-choice="autumn" aria-pressed="false" aria-controls="chapters" type="button">
+
+        <span class="season-art" aria-hidden="true"><svg viewBox="0 0 80 80"><path class="leaf" d="M23 58C9 32 42 17 62 14c3 27-6 52-39 44Z"/><path d="M17 69 51 30M29 55l-2-14m11 4 16-2"/><circle cx="65" cy="64" r="3"/></svg></span>
+
+        <span class="season-copy"><span class="season-en">AUTUMN · 03</span><strong>秋</strong><span class="season-caption">踩着落叶散步</span></span>
+
+        <span class="season-count" data-season-count="autumn">翻开看看</span><span class="season-selected" aria-hidden="true">↗</span>
+
+      </button>
+
+      <button class="season-choice" data-season-choice="winter" aria-pressed="false" aria-controls="chapters" type="button">
+
+        <span class="season-art" aria-hidden="true"><svg viewBox="0 0 80 80"><circle class="snow-halo" cx="40" cy="40" r="29"/><path d="M40 13v54M17 27l46 26M17 53l46-26M32 19l8 8 8-8M32 61l8-8 8 8M18 36l11-3-3-11M62 44l-11 3 3 11M26 58l3-11-11-3M54 22l-3 11 11 3"/></svg></span>
+
+        <span class="season-copy"><span class="season-en">WINTER · 04</span><strong>冬</strong><span class="season-caption">口袋留一点暖</span></span>
+
+        <span class="season-count" data-season-count="winter">翻开看看</span><span class="season-selected" aria-hidden="true">↗</span>
+
+      </button>
+
+    </div>
+
+
+
+    <div class="album-summary" id="albumStart">
+
+      <div class="album-position"><span class="now-month" id="nowMonth">—</span><h3><span id="titleText">这一整颗小星球</span><span id="totalNum">0</span></h3></div>
+
+      <button class="all-seasons" type="button" data-season-choice="all" aria-pressed="true">看完整个四季 <span aria-hidden="true">↗</span></button>
+
+    </div>
+
+
+
+    <button class="undated-entry" id="undatedEntry" type="button" aria-pressed="false" hidden><span>那些忘了日期的日子 <small>忘了哪天，也记得开心。</small></span><span><b id="undatedCount"></b> ↗</span></button>
+
+
+
+    <div class="chapters" id="chapters"></div>
+
+
+
+    <div class="empty" id="empty" hidden>
+
+      <svg class="empty-doodle" viewBox="0 0 160 120" aria-hidden="true">
+
+        <circle cx="80" cy="58" r="34" fill="none" stroke="currentColor" stroke-width="1.6"/>
+
+        <path d="M62 66c4 6 10 9 18 9s14-3 18-9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+
+        <circle cx="68" cy="50" r="2.4" fill="currentColor"/><circle cx="92" cy="50" r="2.4" fill="currentColor"/>
+
+        <ellipse cx="80" cy="58" rx="52" ry="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 6" opacity=".6"/>
+
+        <path d="M126 26l2.4 5.4 5.4 2.4-5.4 2.4-2.4 5.4-2.4-5.4-5.4-2.4 5.4-2.4 2.4-5.4Z" fill="currentColor" opacity=".85"/>
+
+        <path d="M34 92l1.8 4 4 1.8-4 1.8-1.8 4-1.8-4-4-1.8 4-1.8 1.8-4Z" fill="currentColor" opacity=".55"/>
+
+      </svg>
+
+      <p class="empty-title">这里还空着</p>
+
+      <p class="empty-sub">还没收藏过照片呢。点一下照片右上角的小星星，它就会跑到这里来。</p>
+
+      <div class="empty-actions">
+
+        <button class="btn btn-solid" id="emptyAddBtn" type="button" hidden>添一张新的回忆</button>
+
+        <button class="btn btn-outline" type="button" data-season-choice="all">看看全部照片</button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <footer class="footer">
+
+    <div class="footer-inner">
+
+      <p class="footer-big">照片会一直加，<br>开心也是。</p>
+
+      <div class="footer-meta">
+
+        <span>演示插画与聊天均为虚构</span>
+
+        <span><span data-site-copy="footerEyebrow">OUR LITTLE DAYS</span><span class="sep">·</span><span id="yearNow"></span></span>
+
+        <a href="#top">回到顶上 ↑</a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+</main>
+
+
+
+<!-- 添加照片（IndexedDB 本机存储，后续可替换为 OSS 直传） -->
+
+<button class="fab-add" id="addBtn" type="button" aria-label="添加照片到这台设备" title="添加照片到这台设备">
+
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+
+</button>
+
+
+
+<dialog class="album-sheet" id="browseSheet" aria-labelledby="browseTitle">
+
+  <div class="sheet-head"><div><p class="eyebrow">TAKE YOUR TIME</p><h2 id="browseTitle">怎么翻，都好看。</h2></div><button class="sheet-close" data-close-sheet type="button" aria-label="收起来">×</button></div>
+
+  <div class="sheet-body"><h3>换个方式看看</h3>  <nav class="modes" id="modes" role="group" aria-label="查看照片的方式">
+
+    <span class="modes-pill" aria-hidden="true"></span>
+
+    <button type="button" data-mode="flow" aria-pressed="true" aria-label="瀑布流">
+
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2.4"/><rect x="13" y="3" width="8" height="5" rx="2.4"/><rect x="3" y="13" width="8" height="8" rx="2.4"/><rect x="13" y="10" width="8" height="11" rx="2.4"/></svg>
+
+      <span class="mode-label">瀑布流</span>
+
+    </button>
+
+    <button type="button" data-mode="reel" aria-pressed="false" aria-label="一张一张看">
+
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M9 21h6"/></svg>
+
+      <span class="mode-label">一张一张</span>
+
+    </button>
+
+    <button type="button" data-mode="timeline" aria-pressed="false" aria-label="时间轴">
+
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+
+      <span class="mode-label">时间轴</span>
+
+    </button>
+
+  </nav>
+
+
+
+
+
+  <div class="filters" id="filters"><h3>想找哪一些？</h3><div class="chips" id="chips" role="group" aria-label="筛选照片"></div></div>
+
+  <a class="sheet-link" href="chat.html">只想翻翻聊天记录 <span>↗</span></a>
+
+  <button class="sheet-link" type="button" data-open-preferences aria-haspopup="dialog">按你的习惯 <span>↗</span></button>
+
+  <button class="sheet-link" type="button" id="manageTags">整理一下标签 <span>↗</span></button>
+
+  <p class="sheet-footnote">慢慢翻，喜欢的就点一下小星星。</p></div>
+
+</dialog>
+
+<dialog class="album-sheet" id="tagSheet" aria-labelledby="tagTitle">
+
+  <div class="sheet-head"><div><p class="eyebrow">LITTLE NOTES</p><h2 id="tagTitle">给回忆做个记号</h2></div><button class="sheet-close" data-close-sheet type="button" aria-label="收起来">×</button></div>
+
+  <div class="sheet-body"><p class="sheet-intro" id="tagIntro"></p><div id="tagContent"></div><p id="tagStatus" role="status" aria-live="polite"></p></div>
+
+</dialog>
+
+
+
+<!-- 音乐始终共用一个播放器，查看方式变化不会重新播放 -->
+
+<aside class="music-dock" id="musicDock" aria-label="四季音乐">
+
+  <button class="music-toggle" id="musicToggle" type="button" aria-label="播放音乐" aria-pressed="false">
+
+    <span class="music-record" aria-hidden="true"><svg class="music-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></svg><svg class="music-pause" viewBox="0 0 24 24"><path d="M8 5h3v14H8zM15 5h3v14h-3z"/></svg></span>
+
+    <span class="music-text"><span id="musicTitle">四季的小旋律</span><small id="musicStatus" role="status" aria-live="polite">轻触，听听这个季节</small></span>
+
+    <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+
+  </button>
+
+  <button class="volume-toggle" id="volumeToggle" type="button" aria-label="音乐和音量" aria-expanded="false" aria-controls="volumePanel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4ZM17 8a7 7 0 0 1 0 8M20 5a11 11 0 0 1 0 14"/></svg></button>
+
+  <div class="volume-panel" id="volumePanel" hidden>
+
+    <p class="music-panel-heading">给这一页，换个心情。</p>
+
+    <p id="musicSetName">纸页之间</p>
+
+    <button class="music-next" id="musicNext" type="button">换一组旋律 <span aria-hidden="true">⤨</span></button>
+
+    <small id="musicSetHint">下一组四季旋律，等你带来。</small>
+
+    <label for="musicVolume">轻一点，也很好 <output id="volumeValue">55%</output></label><input id="musicVolume" type="range" min="0" max="100" value="55" aria-label="音乐音量">
+
+  </div>
+
+</aside>
+
+
+
+<!-- 一张一张模式的状态条 -->
+
+<div class="reel-ui" id="reelUI" aria-hidden="true">
+
+  <span class="reel-count"><b id="reelNow">01</b> / <span id="reelTotal">0</span></span>
+
+  <span class="reel-bar"><i id="reelBar"></i></span>
+
+  <span class="reel-hint">滚动 / ↑↓ 翻一张</span>
+
+</div>
+
+
+
+<!-- 时间轴模式的悬停大图 -->
+
+<div class="hover-preview" id="hoverPreview" aria-hidden="true"><img alt=""></div>
+
+
+
+<noscript>
+
+  <p style="padding:40px;text-align:center;font-family:system-ui">
+
+    这个页面需要 JavaScript 才能显示照片。
+
+  </p>
+
+</noscript>
+
+
+
+<!-- 配置层：照片清单（自动生成）→ 站点配置 → 页面逻辑 → 三种查看方式 -->
+
+<script src="data/photos.js?v=12-moments" defer></script>
+
+<script src="assets/js/photo-dates.js?v=10" defer></script>
+
+<script src="assets/js/add-photo.js?v=10" defer></script>
+
+<script src="assets/js/season-fx.js" defer></script>
+
+<script src="assets/js/metadata.js?v=10" defer></script>
+
+<link rel="stylesheet" href="assets/css/chat-media.css?v=13-rich">
+<script src="assets/js/chat-data.js?v=16" defer></script>
+
+<script src="assets/js/chat-media.js?v=16" defer></script>
+<script src="assets/js/chat-render.js?v=16" defer></script>
+
+<script src="assets/js/chat.js?v=16" defer></script>
+
+<script src="assets/js/media.js?v=16" defer></script>
+
+<script src="assets/js/ticket.js?v=17" defer></script>
+
+<script src="assets/js/app.js?v=17" defer></script>
+
+<script src="assets/js/views.js?v=16" defer></script>
+
+<script src="assets/js/seasonal-bgm.js?v=10" defer></script>
+
+<script src="assets/js/music.js?v=13-rich" defer></script>
+
+<script src="assets/js/controls.js?v=12-moments" defer></script>
+
+</body>
+
+</html>
+

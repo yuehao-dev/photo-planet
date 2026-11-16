@@ -1,0 +1,44 @@
+{
+  "title": "纸页之间 · V4.2 柔和渐变版",
+  "revision": "4.2",
+  "bpm": 112,
+  "bars": 56,
+  "duration": 120,
+  "sampleRate": 44100,
+  "crossfadeSeconds": 7,
+  "transition": "immediate continuous overlapping smoothstep crossfade; lead equal power, backing complementary",
+  "seasons": {
+    "spring": {
+      "title": "春 · 今天也想见你",
+      "duration_seconds": 120,
+      "samples": 5292000,
+      "integrated_lufs": -20.5,
+      "true_peak_dbtp": -6.35,
+      "lead_instrument": "跳音钢琴 · 拨奏弦乐 · 轻跳拍"
+    },
+    "summer": {
+      "title": "夏 · 分你一口冰淇淋",
+      "duration_seconds": 120,
+      "samples": 5292000,
+      "integrated_lufs": -20.5,
+      "true_peak_dbtp": -7.93,
+      "lead_instrument": "马林巴 · 吉他反拍 · 夏日律动"
+    },
+    "autumn": {
+      "title": "秋 · 踩着落叶去约会",
+      "duration_seconds": 120,
+      "samples": 5292000,
+      "integrated_lufs": -20.5,
+      "true_peak_dbtp": -5.59,
+      "lead_instrument": "尼龙吉他 · 电钢琴 · 轻摇摆"
+    },
+    "winter": {
+      "title": "冬 · 把手放进我口袋",
+      "duration_seconds": 120,
+      "samples": 5292000,
+      "integrated_lufs": -20.5,
+      "true_peak_dbtp": -4.02,
+      "lead_instrument": "八音盒 · 拨奏弦乐 · 铃铛跳步"
+    }
+  }
+}

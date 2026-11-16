@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "fictional": true,
+    "message_count": 3
+  },
+  "messages": [
+    {
+      "timestamp": 1741426620,
+      "time": "2025-03-08T17:37:00+08:00",
+      "sender": "我",
+      "sender_username": "wxid_demo_me",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10008",
+      "local_id": 8,
+      "source_database": "demo.db",
+      "content": "好，等下给你带一杯热的。"
+    },
+    {
+      "timestamp": 1741426800,
+      "time": "2025-03-08T17:40:00+08:00",
+      "sender": "小夏",
+      "sender_username": "wxid_demo_her",
+      "chat_username": "wxid_demo_her",
+      "type": "引用消息",
+      "server_id": "10009",
+      "local_id": 9,
+      "source_database": "demo.db",
+      "content": "那朵小云我还记得。 [↩ wxid_demo_her:今天拍到一朵很像小云的花。]"
+    },
+    {
+      "timestamp": 1741513200,
+      "time": "2025-03-09T17:40:00+08:00",
+      "sender": "我",
+      "sender_username": "wxid_demo_me",
+      "chat_username": "wxid_demo_her",
+      "type": "文本",
+      "server_id": "10010",
+      "local_id": 10,
+      "source_database": "demo.db",
+      "content": "今天也有一点小小的开心。"
+    }
+  ]
+}

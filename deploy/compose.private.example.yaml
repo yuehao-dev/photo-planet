@@ -1,0 +1,26 @@
+# Adapt these paths; credentials, TLS and runtime live outside the source checkout.
+services:
+  gateway:
+    image: node:22-bookworm-slim
+    command: ["node", "/app/server.cjs"]
+    environment:
+      ALBUM_CONFIG: /run/secrets/gateway.json
+      ALBUM_MEDIA_INDEX_ROOT: /run/album/media-index
+      NODE_OPTIONS: --max-old-space-size=128
+    volumes:
+      - ./oss-gateway:/app:ro
+      - ../../photo-planet-private/gateway.json:/run/secrets/gateway.json:ro
+      - ../../photo-planet-private/media-index:/run/album/media-index:ro
+    expose: ["3000"]
+    restart: unless-stopped
+    mem_limit: 256m
+  nginx:
+    image: nginx:1.28-alpine
+    ports: ["443:443"]
+    volumes:
+      - ./nginx.private.conf.example:/etc/nginx/conf.d/default.conf:ro
+      - ../../photo-planet-private/runtime:/srv/planet/album:ro
+      - ../../photo-planet-private/tls:/etc/nginx/tls:ro
+    depends_on: [gateway]
+    restart: unless-stopped
+    mem_limit: 128m
